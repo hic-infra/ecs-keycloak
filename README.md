@@ -1,5 +1,6 @@
 # Keycloak on ECS with RDS
 [![CI](https://github.com/hic-infra/ecs-keycloak/actions/workflows/ci.yml/badge.svg)](https://github.com/hic-infra/ecs-keycloak/actions/workflows/ci.yml)
+[![Container build](https://github.com/manics/ecs-keycloak/actions/workflows/container.yml/badge.svg)](https://github.com/manics/ecs-keycloak/actions/workflows/container.yml)
 
 This is a demo of running Keycloak on ECS with an RDS (PostgreSQL) database.
 
