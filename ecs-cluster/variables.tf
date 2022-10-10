@@ -10,16 +10,11 @@ variable "region" {
   description = "AWS region name"
 }
 
-variable "container-registry" {
-  type        = string
-  default     = ""
-  description = "ECR registry name, default is ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com"
-}
 variable "keycloak-image" {
   type        = string
-  description = "Keycloak image name in container-repository-root, e.g. example/keycloak:YYYY-MM-DD"
+  default     = "ghcr.io/hic-infra/ecs-keycloak:1.0.0-beta.1"
+  description = "Keycloak image including registry"
 }
-
 
 variable "lb-cidr-blocks-in" {
   type        = list(string)

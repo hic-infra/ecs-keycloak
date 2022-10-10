@@ -1,8 +1,6 @@
 data "aws_caller_identity" "current" {}
 
 locals {
-  # Container build from ../container/ and pushed to ECR
-  container-image   = var.container-registry == "" ? "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.region}.amazonaws.com/${var.keycloak-image}" : "${var.container-registry}/${var.keycloak-image}"
   container-port    = 8443
   keycloak-hostname = var.keycloak-hostname == "" ? aws_lb.keycloak.dns_name : var.keycloak-hostname
 }
@@ -269,7 +267,7 @@ resource "aws_ecs_task_definition" "keycloak" {
   # task_role_arn      = aws_iam_role.ecs_task_role.arn
   container_definitions = jsonencode([{
     name  = "${var.name}-container"
-    image = local.container-image
+    image = var.keycloak-image
     # command   = ["start", "--optimized"]
     essential = true
     environment = [
