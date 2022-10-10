@@ -1,0 +1,3 @@
+bucket = "s3-bucket-name"
+key    = "terraform/ecs-keycloak/keycloak-staging/terraform.tfstate"
+region = "eu-west-2"

@@ -1,0 +1,4 @@
+.terraform
+terraform.tfstate*
+*-private.key
+*-public.crt

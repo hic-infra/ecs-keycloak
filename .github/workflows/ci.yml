@@ -1,0 +1,31 @@
+---
+
+name: CI
+'on':
+  push:
+    branches:
+      - '*'
+    paths-ignore:
+      - '**/*.md'
+
+jobs:
+
+  validate:
+    name: terraform validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Validate
+        run: |
+          cd ecs-cluster
+          terraform init -backend=false
+          terraform validate
+
+      - name: Lint
+        run: |
+          terraform fmt -recursive --diff -check
