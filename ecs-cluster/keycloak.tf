@@ -8,7 +8,8 @@ locals {
 }
 
 resource "random_password" "db-password" {
-  length = 20
+  length  = 20
+  special = false
 }
 
 resource "random_string" "initial-keycloak-password" {
