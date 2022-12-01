@@ -39,6 +39,13 @@ variable "db-snapshot-identifier" {
   default     = null
   description = "If creating a new DB restore from this snapshot"
 }
+
+variable "db-instance-type" {
+  type        = string
+  default     = "db.t3.micro"
+  description = "RDS instance type: https://aws.amazon.com/rds/instance-types/"
+}
+
 variable "loadbalancer-certificate-arn" {
   type        = string
   description = "ARN of the ACM certificate to use for the load balancer"

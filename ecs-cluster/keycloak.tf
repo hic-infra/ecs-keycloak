@@ -175,7 +175,7 @@ resource "aws_db_subnet_group" "keycloak" {
   subnet_ids = module.vpc.private_subnets
 }
 
-resource "aws_db_instance" "keycloak" {
+resource "aws_db_instance" "keycloak-old" {
   identifier        = "keycloak"
   instance_class    = "db.t3.micro"
   allocated_storage = 5
@@ -193,7 +193,43 @@ resource "aws_db_instance" "keycloak" {
   publicly_accessible    = false
   skip_final_snapshot    = true
 
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_db_instance" "keycloak" {
+  identifier            = "keycloak-1"
+  instance_class        = var.db-instance-type
+  allocated_storage     = 5
+  max_allocated_storage = 20
+  engine                = "postgres"
+  # TODO: try serverless?
+  # engine = "aurora-postgresql"
+  # auto_minor_version_upgrade defaults to True, so this will be auto-upgraded to the  most recent 14.*
+  engine_version    = "14"
+  storage_encrypted = true
+
+  # By default changes are queued up for the maintenance window
+  # If keycloak desired-count=0 then we can apply straight away
+  apply_immediately = (var.desired-count < 1)
+
+  # Max 35 days https://aws.amazon.com/rds/features/backup/
+  backup_retention_period  = 35
+  delete_automated_backups = false
+  deletion_protection      = true
+
+  db_name                = var.db-name
+  username               = var.db-username
+  password               = random_password.db-password.result
+  db_subnet_group_name   = aws_db_subnet_group.keycloak.name
+  vpc_security_group_ids = [aws_security_group.rds.id]
+  parameter_group_name   = aws_db_parameter_group.keycloak.name
+  publicly_accessible    = false
+  skip_final_snapshot    = false
+
   snapshot_identifier = var.db-snapshot-identifier
+
   lifecycle {
     prevent_destroy = true
   }
