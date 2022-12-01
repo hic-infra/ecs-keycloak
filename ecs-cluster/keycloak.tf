@@ -193,6 +193,7 @@ resource "aws_db_instance" "keycloak" {
   publicly_accessible    = false
   skip_final_snapshot    = true
 
+  snapshot_identifier = var.db-snapshot-identifier
   lifecycle {
     prevent_destroy = true
   }
@@ -327,9 +328,9 @@ resource "aws_ecs_service" "keycloak" {
   name                               = "${var.name}-service"
   cluster                            = aws_ecs_cluster.ecs.id
   task_definition                    = aws_ecs_task_definition.keycloak.arn
-  desired_count                      = 1
-  deployment_minimum_healthy_percent = 100
-  deployment_maximum_percent         = 200
+  desired_count                      = var.desired-count
+  deployment_minimum_healthy_percent = (var.desired-count < 1) ? 0 : 100
+  deployment_maximum_percent         = max(100, var.desired-count * 200)
   launch_type                        = "FARGATE"
   scheduling_strategy                = "REPLICA"
 

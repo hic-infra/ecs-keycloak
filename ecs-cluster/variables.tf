@@ -34,6 +34,11 @@ variable "db-username" {
   description = "Keycloak DB username"
 }
 
+variable "db-snapshot-identifier" {
+  type        = string
+  default     = null
+  description = "If creating a new DB restore from this snapshot"
+}
 variable "loadbalancer-certificate-arn" {
   type        = string
   description = "ARN of the ACM certificate to use for the load balancer"
@@ -43,6 +48,12 @@ variable "keycloak-hostname" {
   type        = string
   default     = ""
   description = "Keycloak hostname, if empty uses the load-balancer hostname"
+}
+
+variable "desired-count" {
+  type        = number
+  description = "Number of Keycloak containers to run, set to 0 for DB maintenance"
+  default     = 1
 }
 
 variable "default-tags" {
