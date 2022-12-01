@@ -175,29 +175,6 @@ resource "aws_db_subnet_group" "keycloak" {
   subnet_ids = module.vpc.private_subnets
 }
 
-resource "aws_db_instance" "keycloak-old" {
-  identifier        = "keycloak"
-  instance_class    = "db.t3.micro"
-  allocated_storage = 5
-  engine            = "postgres"
-  # TODO: try serverless?
-  # engine = "aurora-postgresql"
-  # auto_minor_version_upgrade defaults to True, so this will be auto-upgraded to the  most recent 14.*
-  engine_version         = "14"
-  db_name                = var.db-name
-  username               = var.db-username
-  password               = random_password.db-password.result
-  db_subnet_group_name   = aws_db_subnet_group.keycloak.name
-  vpc_security_group_ids = [aws_security_group.rds.id]
-  parameter_group_name   = aws_db_parameter_group.keycloak.name
-  publicly_accessible    = false
-  skip_final_snapshot    = true
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
 resource "aws_db_instance" "keycloak" {
   identifier            = "keycloak-1"
   instance_class        = var.db-instance-type
