@@ -176,14 +176,26 @@ resource "aws_db_subnet_group" "keycloak" {
 }
 
 resource "aws_db_instance" "keycloak" {
-  identifier        = "keycloak"
-  instance_class    = "db.t3.micro"
-  allocated_storage = 5
-  engine            = "postgres"
+  identifier            = "keycloak-1"
+  instance_class        = var.db-instance-type
+  allocated_storage     = 5
+  max_allocated_storage = 20
+  engine                = "postgres"
   # TODO: try serverless?
   # engine = "aurora-postgresql"
   # auto_minor_version_upgrade defaults to True, so this will be auto-upgraded to the  most recent 14.*
-  engine_version         = "14"
+  engine_version    = "14"
+  storage_encrypted = true
+
+  # By default changes are queued up for the maintenance window
+  # If keycloak desired-count=0 then we can apply straight away
+  apply_immediately = (var.desired-count < 1)
+
+  # Max 35 days https://aws.amazon.com/rds/features/backup/
+  backup_retention_period  = 35
+  delete_automated_backups = false
+  deletion_protection      = true
+
   db_name                = var.db-name
   username               = var.db-username
   password               = random_password.db-password.result
@@ -191,7 +203,9 @@ resource "aws_db_instance" "keycloak" {
   vpc_security_group_ids = [aws_security_group.rds.id]
   parameter_group_name   = aws_db_parameter_group.keycloak.name
   publicly_accessible    = false
-  skip_final_snapshot    = true
+  skip_final_snapshot    = false
+
+  snapshot_identifier = var.db-snapshot-identifier
 
   lifecycle {
     prevent_destroy = true
@@ -327,9 +341,9 @@ resource "aws_ecs_service" "keycloak" {
   name                               = "${var.name}-service"
   cluster                            = aws_ecs_cluster.ecs.id
   task_definition                    = aws_ecs_task_definition.keycloak.arn
-  desired_count                      = 1
-  deployment_minimum_healthy_percent = 100
-  deployment_maximum_percent         = 200
+  desired_count                      = var.desired-count
+  deployment_minimum_healthy_percent = (var.desired-count < 1) ? 0 : 100
+  deployment_maximum_percent         = max(100, var.desired-count * 200)
   launch_type                        = "FARGATE"
   scheduling_strategy                = "REPLICA"
 
