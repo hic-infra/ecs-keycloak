@@ -2,7 +2,7 @@ data "aws_availability_zones" "available" {}
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "3.14.2"
+  version = "5.2.0"
 
   name                 = "${var.name}-vpc"
   cidr                 = "10.199.0.0/16"
@@ -12,4 +12,9 @@ module "vpc" {
   enable_nat_gateway   = true
   single_nat_gateway   = true
   enable_dns_hostnames = true
+
+  manage_default_security_group = false
+  manage_default_route_table    = false
+  manage_default_network_acl    = false
+  map_public_ip_on_launch       = true
 }
