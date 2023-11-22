@@ -13,6 +13,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Check tag updated if this is a tag
+        run: |
+          ./ci/check_tag.sh
+
       - name: Install terraform
         uses: hashicorp/setup-terraform@v2
 
