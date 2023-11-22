@@ -17,7 +17,6 @@ env:
   PLATFORMS: linux/amd64,linux/arm64
 
 jobs:
-
   container-build:
     runs-on: ubuntu-latest
     steps:
