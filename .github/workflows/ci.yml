@@ -1,21 +1,24 @@
 ---
-
 name: CI
 on:
   push:
   pull_request:
 
 jobs:
-
   validate:
-    name: terraform validate
-    runs-on: ubuntu-latest
+    name: terraform lint and validate
+    runs-on: ubuntu-22.04
+    timeout-minutes: 4
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install terraform
         uses: hashicorp/setup-terraform@v2
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
 
       - name: Validate
         run: |
@@ -23,6 +26,5 @@ jobs:
           terraform init -backend=false
           terraform validate
 
-      - name: Lint
-        run: |
-          terraform fmt -recursive --diff -check
+      - name: pre-commit
+        uses: pre-commit/action@v3.0.0

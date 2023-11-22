@@ -1,4 +1,5 @@
 # Keycloak on ECS with RDS
+
 [![CI](https://github.com/hic-infra/ecs-keycloak/actions/workflows/ci.yml/badge.svg)](https://github.com/hic-infra/ecs-keycloak/actions/workflows/ci.yml)
 [![Container build](https://github.com/manics/ecs-keycloak/actions/workflows/container.yml/badge.svg)](https://github.com/manics/ecs-keycloak/actions/workflows/container.yml)
 
@@ -27,6 +28,7 @@ Create an S3 backend configuration file (see [`ecs-cluster/example.s3.tfbackend`
 Check the [Terraform variables](ecs-cluster/variables.tf), and define them in a `*.tfvars` file, e.g. `example.tfvars`.
 
 Initialise the terraform directory passing (first time only), then run:
+
 ```sh
 cd ecs-cluster
 terraform init -backend-config=example.s3.tfbackend
