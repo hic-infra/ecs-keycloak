@@ -1,6 +1,6 @@
 # https://www.keycloak.org/server/containers
 
-ARG KEYCLOAK_VERSION=22.0.5
+ARG KEYCLOAK_VERSION=23.0.4
 FROM quay.io/keycloak/keycloak:$KEYCLOAK_VERSION as builder
 
 ENV KC_DB=postgres
