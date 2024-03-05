@@ -315,10 +315,12 @@ resource "aws_ecs_task_definition" "keycloak" {
         name  = "KC_HOSTNAME"
         value = local.keycloak-hostname
       },
-      # https://github.com/keycloak/keycloak/issues/13114
+      # https://www.keycloak.org/server/reverseproxy
+      # AWS load balancers set X-Forwarded not Forwarded
+      # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/x-forwarded-headers.html
       {
-        name  = "KC_PROXY"
-        value = "reencrypt"
+        name  = "KC_PROXY_HEADERS"
+        value = "xforwarded"
       },
       # {
       #   name  = "KC_LOG_LEVEL"
