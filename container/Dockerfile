@@ -5,6 +5,7 @@ FROM quay.io/keycloak/keycloak:$KEYCLOAK_VERSION as builder
 
 ENV KC_DB=postgres
 ENV KC_HOSTNAME=localhost
+ENV KC_HEALTH_ENABLED=true
 
 RUN /opt/keycloak/bin/kc.sh build
 

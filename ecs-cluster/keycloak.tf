@@ -323,10 +323,6 @@ resource "aws_ecs_task_definition" "keycloak" {
         value = "xforwarded"
       },
       {
-        name  = "KC_HEALTH_ENABLED"
-        value = "true"
-      },
-      {
         name  = "KC_LOG_LEVEL"
         value = var.keycloak-loglevel
       },
