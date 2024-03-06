@@ -75,6 +75,12 @@ variable "keycloak-hostname" {
   description = "Keycloak hostname, if empty uses the load-balancer hostname"
 }
 
+variable "keycloak-loglevel" {
+  type        = string
+  default     = "INFO"
+  description = "Keycloak log-level e.g. DEBUG."
+}
+
 variable "desired-count" {
   type        = number
   description = "Number of Keycloak containers to run, set to 0 for DB maintenance"

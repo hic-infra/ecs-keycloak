@@ -322,10 +322,10 @@ resource "aws_ecs_task_definition" "keycloak" {
         name  = "KC_PROXY_HEADERS"
         value = "xforwarded"
       },
-      # {
-      #   name  = "KC_LOG_LEVEL"
-      #   value = "debug"
-      # }
+      {
+        name  = "KC_LOG_LEVEL"
+        value = var.keycloak-loglevel
+      },
     ]
     portMappings = [{
       protocol      = "tcp"
