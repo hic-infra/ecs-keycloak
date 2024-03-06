@@ -104,7 +104,7 @@ resource "aws_alb_target_group" "keycloak" {
     protocol            = "HTTPS"
     matcher             = "200"
     timeout             = "5"
-    path                = "/"
+    path                = "/health"
     unhealthy_threshold = "2"
   }
 }
@@ -321,6 +321,10 @@ resource "aws_ecs_task_definition" "keycloak" {
       {
         name  = "KC_PROXY_HEADERS"
         value = "xforwarded"
+      },
+      {
+        name  = "KC_HEALTH_ENABLED"
+        value = "true"
       },
       {
         name  = "KC_LOG_LEVEL"
