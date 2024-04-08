@@ -3,6 +3,7 @@ data "aws_availability_zones" "available" {}
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.2.0"
+  count   = var.vpc-id == "" ? 1 : 0
 
   name                 = "${var.name}-vpc"
   cidr                 = "10.199.0.0/16"
@@ -17,4 +18,11 @@ module "vpc" {
   manage_default_route_table    = false
   manage_default_network_acl    = false
   map_public_ip_on_launch       = true
+}
+
+# Backwards compatibility with existing deployments
+# https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#enabling-count-or-for_each-for-a-resource
+moved {
+  from = module.vpc
+  to   = module.vpc[0]
 }

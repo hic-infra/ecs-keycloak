@@ -22,6 +22,24 @@ variable "lb-cidr-blocks-in" {
   description = "CIDR blocks to allow access to the load balancer"
 }
 
+variable "vpc-id" {
+  type        = string
+  default     = ""
+  description = "VPC ID, if empty creates a new VPC"
+}
+
+variable "public-subnets" {
+  type        = list(string)
+  default     = []
+  description = "Public subnet IDs, must be defined if vpc-id is provided"
+}
+
+variable "private-subnets" {
+  type        = list(string)
+  default     = []
+  description = "Private subnet IDs, must be defined if vpc-id is provided"
+}
+
 variable "db-name" {
   type        = string
   default     = "keycloak"
@@ -55,6 +73,12 @@ variable "keycloak-hostname" {
   type        = string
   default     = ""
   description = "Keycloak hostname, if empty uses the load-balancer hostname"
+}
+
+variable "keycloak-loglevel" {
+  type        = string
+  default     = "INFO"
+  description = "Keycloak log-level e.g. DEBUG."
 }
 
 variable "desired-count" {

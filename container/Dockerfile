@@ -1,10 +1,11 @@
 # https://www.keycloak.org/server/containers
 
-ARG KEYCLOAK_VERSION=22.0.5
+ARG KEYCLOAK_VERSION=24.0.2
 FROM quay.io/keycloak/keycloak:$KEYCLOAK_VERSION as builder
 
 ENV KC_DB=postgres
 ENV KC_HOSTNAME=localhost
+ENV KC_HEALTH_ENABLED=true
 
 RUN /opt/keycloak/bin/kc.sh build
 

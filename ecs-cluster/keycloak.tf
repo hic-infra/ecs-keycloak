@@ -3,6 +3,10 @@ data "aws_caller_identity" "current" {}
 locals {
   container-port    = 8443
   keycloak-hostname = var.keycloak-hostname == "" ? aws_lb.keycloak.dns_name : var.keycloak-hostname
+
+  vpc_id          = var.vpc-id == "" ? module.vpc[0].vpc_id : var.vpc-id
+  public_subnets  = var.public-subnets == [] ? module.vpc[0].public_subnets : var.public-subnets
+  private_subnets = var.private-subnets == [] ? module.vpc[0].private_subnets : var.private-subnets
 }
 
 resource "random_password" "db-password" {
@@ -18,7 +22,7 @@ resource "random_string" "initial-keycloak-password" {
 
 resource "aws_security_group" "rds" {
   name   = "${var.name}-sg-rds"
-  vpc_id = module.vpc.vpc_id
+  vpc_id = local.vpc_id
 
   ingress {
     from_port       = 5432
@@ -30,7 +34,7 @@ resource "aws_security_group" "rds" {
 
 resource "aws_security_group" "alb" {
   name   = "${var.name}-sg-alb"
-  vpc_id = module.vpc.vpc_id
+  vpc_id = local.vpc_id
 
   ingress {
     protocol    = "tcp"
@@ -56,7 +60,7 @@ resource "aws_security_group" "alb" {
 
 resource "aws_security_group" "ecs-task-keycloak" {
   name   = "${var.name}-sg-task-keycloak"
-  vpc_id = module.vpc.vpc_id
+  vpc_id = local.vpc_id
 
   ingress {
     protocol        = "tcp"
@@ -80,7 +84,7 @@ resource "aws_lb" "keycloak" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb.id]
-  subnets            = module.vpc.public_subnets
+  subnets            = local.public_subnets
 
   enable_deletion_protection = true
 
@@ -91,7 +95,7 @@ resource "aws_alb_target_group" "keycloak" {
   name        = "${var.name}-tg"
   port        = 443
   protocol    = "HTTPS"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = local.vpc_id
   target_type = "ip"
 
   health_check {
@@ -100,7 +104,7 @@ resource "aws_alb_target_group" "keycloak" {
     protocol            = "HTTPS"
     matcher             = "200"
     timeout             = "5"
-    path                = "/"
+    path                = "/health"
     unhealthy_threshold = "2"
   }
 }
@@ -172,7 +176,7 @@ resource "aws_db_parameter_group" "keycloak" {
 
 resource "aws_db_subnet_group" "keycloak" {
   name       = "${var.name}-keycloak"
-  subnet_ids = module.vpc.private_subnets
+  subnet_ids = local.private_subnets
 }
 
 resource "aws_db_instance" "keycloak" {
@@ -311,15 +315,17 @@ resource "aws_ecs_task_definition" "keycloak" {
         name  = "KC_HOSTNAME"
         value = local.keycloak-hostname
       },
-      # https://github.com/keycloak/keycloak/issues/13114
+      # https://www.keycloak.org/server/reverseproxy
+      # AWS load balancers set X-Forwarded not Forwarded
+      # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/x-forwarded-headers.html
       {
-        name  = "KC_PROXY"
-        value = "reencrypt"
+        name  = "KC_PROXY_HEADERS"
+        value = "xforwarded"
       },
-      # {
-      #   name  = "KC_LOG_LEVEL"
-      #   value = "debug"
-      # }
+      {
+        name  = "KC_LOG_LEVEL"
+        value = var.keycloak-loglevel
+      },
     ]
     portMappings = [{
       protocol      = "tcp"
@@ -352,7 +358,7 @@ resource "aws_ecs_service" "keycloak" {
       aws_security_group.rds.id,
       aws_security_group.ecs-task-keycloak.id
     ]
-    subnets = module.vpc.private_subnets
+    subnets = local.private_subnets
     # TODO: Setting this to False means the image can't be pulled. Why? It works in K8s.
     # assign_public_ip = true
   }
