@@ -369,6 +369,9 @@ resource "aws_ecs_service" "keycloak" {
     container_port   = local.container-port
   }
 
+  # Java applications can be very slow to start
+  health_check_grace_period_seconds = 180
+
   # lifecycle {
   #   ignore_changes = [desired_count]
   # }
