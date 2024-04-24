@@ -5,8 +5,8 @@ locals {
   keycloak-hostname = var.keycloak-hostname == "" ? aws_lb.keycloak.dns_name : var.keycloak-hostname
 
   vpc_id          = var.vpc-id == "" ? module.vpc[0].vpc_id : var.vpc-id
-  public_subnets  = length(var.public-subnets) == 0 ? module.vpc[0].public_subnets : var.public-subnets
-  private_subnets = length(var.private-subnets) == 0 ? module.vpc[0].private_subnets : var.private-subnets
+  public_subnets  = coalescelist(var.public-subnets, module.vpc[0].public_subnets)
+  private_subnets = coalescelist(var.private-subnets, module.vpc[0].private_subnets)
 }
 
 resource "random_password" "db-password" {
