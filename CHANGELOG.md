@@ -1,9 +1,11 @@
 # Changelog
 
-## 2.0.0-beta.1 - In progress
+## 2.0.0-beta.3 - In progress
 
-([full changelog](https://github.com/hic-infra/ecs-keycloak/compare/1.0.0...2.0.0-beta.1))
+([full changelog](https://github.com/hic-infra/ecs-keycloak/compare/1.0.0...2.0.0-beta.3))
 
+- Fix empty check of `var.{public,private}-subnets`, delay health check, 2.0.0-beta.3 [#16](https://github.com/hic-infra/ecs-keycloak/pull/16)
+- Release 2.0.0-beta.2 [#15](https://github.com/hic-infra/ecs-keycloak/pull/15)
 - Add `terraform {backend s3}` back [#14](https://github.com/hic-infra/ecs-keycloak/pull/14)
 - Release 2.0.0-beta.1 [#13](https://github.com/hic-infra/ecs-keycloak/pull/13)
 - Optionally use existing VPC. Upgrade Keycloak to 24.0.2 [#12](https://github.com/hic-infra/ecs-keycloak/pull/12)
