@@ -4,7 +4,7 @@ terraform {
     # by running `terraform init -backend=false -upgrade`
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.26"
+      version = "~> 5.58"
     }
 
     http = {
@@ -14,12 +14,12 @@ terraform {
 
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.5"
+      version = "~> 3.6"
     }
 
     local = {
       source  = "hashicorp/local"
-      version = "~> 2.4"
+      version = "~> 2.5"
     }
   }
 
