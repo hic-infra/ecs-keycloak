@@ -105,6 +105,7 @@ resource "aws_alb_target_group" "keycloak" {
     matcher             = "200"
     timeout             = "5"
     path                = "/health"
+    port                = 9000
     unhealthy_threshold = "2"
   }
 }
