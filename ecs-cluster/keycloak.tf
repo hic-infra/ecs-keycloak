@@ -2,6 +2,7 @@ data "aws_caller_identity" "current" {}
 
 locals {
   container-port    = 8443
+  management-port   = 9000
   keycloak-hostname = var.keycloak-hostname == "" ? aws_lb.keycloak.dns_name : var.keycloak-hostname
 
   vpc_id          = var.vpc-id == "" ? module.vpc[0].vpc_id : var.vpc-id
@@ -68,6 +69,12 @@ resource "aws_security_group" "ecs-task-keycloak" {
     to_port         = local.container-port
     security_groups = [aws_security_group.alb.id]
   }
+  ingress {
+    protocol        = "tcp"
+    from_port       = local.management-port
+    to_port         = local.management-port
+    security_groups = [aws_security_group.alb.id]
+  }
 
   egress {
     protocol    = "-1"
@@ -105,7 +112,7 @@ resource "aws_alb_target_group" "keycloak" {
     matcher             = "200"
     timeout             = "5"
     path                = "/health"
-    port                = 9000
+    port                = local.management-port
     unhealthy_threshold = "2"
   }
 }
@@ -332,6 +339,10 @@ resource "aws_ecs_task_definition" "keycloak" {
       protocol      = "tcp"
       containerPort = local.container-port
       hostPort      = local.container-port
+      }, {
+      protocol      = "tcp"
+      containerPort = local.management-port
+      hostPort      = local.management-port
     }]
     logConfiguration = {
       logDriver = "awslogs"
