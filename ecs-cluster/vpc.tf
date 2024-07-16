@@ -2,7 +2,7 @@ data "aws_availability_zones" "available" {}
 
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "5.2.0"
+  version = "5.9.0"
   count   = var.vpc-id == "" ? 1 : 0
 
   name                 = "${var.name}-vpc"
