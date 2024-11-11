@@ -325,7 +325,7 @@ resource "aws_ecs_task_definition" "keycloak" {
       },
       # https://www.keycloak.org/server/reverseproxy
       # AWS load balancers set X-Forwarded not Forwarded
-      # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/x-forwarded-headers.html
+      # https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html
       {
         name  = "KC_PROXY_HEADERS"
         value = "xforwarded"
