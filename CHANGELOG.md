@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.0 - 2024-11-12
+
+([full changelog](https://github.com/hic-infra/ecs-keycloak/compare/2.0.0...2.1.0))
+
+- Update keycloak 26.0.5 [#19](https://github.com/hic-infra/ecs-keycloak/pull/19)
+
 ## 2.0.0 - 2024-07-16
 
 ([full changelog](https://github.com/hic-infra/ecs-keycloak/compare/1.0.0...2.0.0))
