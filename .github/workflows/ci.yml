@@ -4,6 +4,10 @@ on:
   push:
   pull_request:
 
+# Queue concurrent builds on same branch (e.g. merging multiple PRs to main)
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
 jobs:
   validate:
     name: terraform lint and validate
