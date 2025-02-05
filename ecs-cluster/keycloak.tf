@@ -138,9 +138,8 @@ resource "aws_alb_listener" "https" {
   port              = 443
   protocol          = "HTTPS"
 
-  # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html
-  # ssl_policy        = "ELBSecurityPolicy-2016-08"
-  ssl_policy      = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
+  # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/describe-ssl-policies.html
+  ssl_policy      = "ELBSecurityPolicy-TLS13-1-2-2021-06"
   certificate_arn = var.loadbalancer-certificate-arn
 
   default_action {
