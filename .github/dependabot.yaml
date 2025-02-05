@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+
+  # Bump dockerfile FROM
+  - package-ecosystem: docker
+    directory: /container
+    schedule:
+      interval: weekly

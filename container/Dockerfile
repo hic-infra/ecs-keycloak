@@ -1,7 +1,5 @@
 # https://www.keycloak.org/server/containers
-
-ARG KEYCLOAK_VERSION=26.0.5
-FROM quay.io/keycloak/keycloak:$KEYCLOAK_VERSION as builder
+FROM quay.io/keycloak/keycloak:26.1.1
 
 ENV KC_DB=postgres
 ENV KC_HOSTNAME=localhost
