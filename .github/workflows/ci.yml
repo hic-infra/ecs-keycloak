@@ -45,7 +45,7 @@ jobs:
       IMAGE_NAME: ${{ github.repository }}
       # Set this to `main` to rebuild container on every push to main
       # instead of just tags
-      PUBLISH_BRANCH: ""
+      PUBLISH_BRANCH: main
       PLATFORMS: linux/amd64,linux/arm64
     steps:
       - name: Checkout
