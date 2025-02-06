@@ -84,6 +84,62 @@ resource "aws_security_group" "ecs-task-keycloak" {
   }
 }
 
+# Load balancer logs
+resource "aws_s3_bucket" "alb-logs" {
+  bucket_prefix = "${var.name}-logs-"
+}
+
+data "aws_iam_policy_document" "alb-logs" {
+  statement {
+    principals {
+      type        = var.loadbalancer-logging-iam-principal.type
+      identifiers = [var.loadbalancer-logging-iam-principal.identifier]
+    }
+    actions = [
+      "s3:PutObject"
+    ]
+    resources = [
+      "${aws_s3_bucket.alb-logs.arn}/access-logs/*"
+    ]
+  }
+}
+
+resource "aws_s3_bucket_policy" "alb-logs" {
+  bucket = aws_s3_bucket.alb-logs.id
+  policy = data.aws_iam_policy_document.alb-logs.json
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "alb-logs-encryption" {
+  bucket = aws_s3_bucket.alb-logs.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+resource "aws_s3_bucket_versioning" "alb-logs" {
+  bucket = aws_s3_bucket.alb-logs.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "alb-logs" {
+  bucket = aws_s3_bucket.alb-logs.id
+  rule {
+    id = "delete-access-logs-${var.expire-access-logs-days}-days"
+    filter {
+      prefix = "access-logs/"
+    }
+    expiration {
+      days = var.expire-access-logs-days
+    }
+    status = "Enabled"
+  }
+}
+
 # Load balancer
 
 resource "aws_lb" "keycloak" {
@@ -96,6 +152,12 @@ resource "aws_lb" "keycloak" {
   enable_deletion_protection = true
 
   preserve_host_header = true
+
+  access_logs {
+    bucket  = aws_s3_bucket.alb-logs.id
+    prefix  = "access-logs"
+    enabled = true
+  }
 }
 
 resource "aws_alb_target_group" "keycloak" {
