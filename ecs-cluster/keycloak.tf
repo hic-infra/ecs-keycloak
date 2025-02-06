@@ -158,6 +158,11 @@ resource "aws_lb" "keycloak" {
     prefix  = "access-logs"
     enabled = true
   }
+
+  depends_on = [
+    # ELB writes a test file to bucket/access-logs so the policy must be in place
+    aws_s3_bucket_policy.alb-logs
+  ]
 }
 
 resource "aws_alb_target_group" "keycloak" {
