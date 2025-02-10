@@ -87,6 +87,24 @@ variable "desired-count" {
   default     = 1
 }
 
+variable "loadbalancer-logging-iam-principal" {
+  type        = map(string)
+  description = "IAM principal type and identifier for the elastic load balancer logger. This is complicated, see https://docs.aws.amazon.com/elasticloadbalancing/latest/application/enable-access-logging.html#attach-bucket-policy"
+
+  # For eu-west-2 this is a hard-coded AWS account ID belonging to AWS
+  # and not Service: logdelivery.elasticloadbalancing.amazonaws.com
+  default = {
+    type       = "AWS"
+    identifier = "arn:aws:iam::652711504416:root"
+  }
+}
+
+variable "expire-access-logs-days" {
+  type        = number
+  description = "Automatically delete access logs after this number of days"
+  default     = 3653
+}
+
 variable "default-tags" {
   type = map(any)
   default = {
