@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.2.1 - 2025-08-06
+
+([full changelog](https://github.com/hic-infra/ecs-keycloak/compare/2.2.0...2.2.1))
+
+- Bump keycloak/keycloak from 26.1.2 to 26.3.2 in /container [#39](https://github.com/hic-infra/ecs-keycloak/pull/39)
+- Bump actions/setup-python from 4 to 5 [#32](https://github.com/hic-infra/ecs-keycloak/pull/32)
+
 ## 2.2.0 - 2025-02-24
 
 ([full changelog](https://github.com/hic-infra/ecs-keycloak/compare/2.1.0...2.2.0))
