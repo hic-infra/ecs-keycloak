@@ -19,6 +19,10 @@ aws ecr get-login-password --region REGION | podman login --username AWS --passw
 podman push ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/example/keycloak:YYYY-MM-DD
 ```
 
+## Email-based OTP
+
+A second container is also available (`ecs-keycloak-eotp`) which supports email-based OTP using [keycloak-2fa-email-authenticator](https://github.com/mesutpiskin/keycloak-2fa-email-authenticator).
+
 ## Deployment
 
 Import a HTTPS certificate to ACM.
