@@ -22,7 +22,7 @@ jobs:
           ./ci/check_tag.sh
 
       - name: Install terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
 
       - uses: actions/setup-python@v6
         with:
