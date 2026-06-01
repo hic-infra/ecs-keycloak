@@ -4,7 +4,7 @@ terraform {
     # by running `terraform init -backend=false -upgrade`
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.58"
+      version = "~> 6.47"
     }
 
     http = {
