@@ -113,3 +113,9 @@ variable "default-tags" {
   }
   description = "Default AWS tags to apply to all resources"
 }
+
+variable "enable_waf" {
+  type        = bool
+  default     = false
+  description = "Enable AWS Web Application Firewall"
+}
