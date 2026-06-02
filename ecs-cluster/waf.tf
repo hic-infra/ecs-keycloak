@@ -27,6 +27,40 @@ resource "aws_wafv2_web_acl_association" "keycloak" {
   web_acl_arn  = aws_wafv2_web_acl.keycloak[0].arn
 }
 
+resource "aws_wafv2_web_acl_rule" "explicit_allow" {
+  count = var.enable_waf ? 1 : 0
+
+  name        = "explicit-allow"
+  priority    = 1
+  web_acl_arn = aws_wafv2_web_acl.keycloak[0].arn
+
+  action {
+    allow {}
+  }
+
+  statement {
+    byte_match_statement {
+      search_string         = "/.well-known/openid-configuration"
+      positional_constraint = "ENDS_WITH"
+
+      field_to_match {
+        uri_path {}
+      }
+
+      text_transformation {
+        priority = 0
+        type     = "LOWERCASE"
+      }
+    }
+  }
+
+  visibility_config {
+    cloudwatch_metrics_enabled = true
+    metric_name                = "ExplicitAllow"
+    sampled_requests_enabled   = true
+  }
+}
+
 # https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-baseline.html
 resource "aws_wafv2_web_acl_rule" "aws_baseline_core" {
   count = var.enable_waf ? 1 : 0
