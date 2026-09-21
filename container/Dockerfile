@@ -1,5 +1,5 @@
 # https://www.keycloak.org/server/containers
-FROM quay.io/keycloak/keycloak:26.7.3-1
+FROM quay.io/keycloak/keycloak:26.7.4-0
 
 ENV KC_DB=postgres
 ENV KC_HOSTNAME=localhost
