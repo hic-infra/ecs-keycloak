@@ -27,11 +27,11 @@ resource "aws_wafv2_web_acl_association" "keycloak" {
   web_acl_arn  = aws_wafv2_web_acl.keycloak[0].arn
 }
 
-resource "aws_wafv2_web_acl_rule" "explicit_allow" {
+resource "aws_wafv2_web_acl_rule" "explicit_allow_openid" {
   count = var.enable_waf ? 1 : 0
 
-  name        = "explicit-allow"
-  priority    = 1
+  name        = "explicit-allow-openid-config"
+  priority    = 2
   web_acl_arn = aws_wafv2_web_acl.keycloak[0].arn
 
   action {
@@ -40,8 +40,8 @@ resource "aws_wafv2_web_acl_rule" "explicit_allow" {
 
   statement {
     byte_match_statement {
-      search_string         = "/.well-known/openid-configuration"
-      positional_constraint = "ENDS_WITH"
+      search_string         = "openid"
+      positional_constraint = "CONTAINS"
 
       field_to_match {
         uri_path {}
@@ -56,7 +56,7 @@ resource "aws_wafv2_web_acl_rule" "explicit_allow" {
 
   visibility_config {
     cloudwatch_metrics_enabled = true
-    metric_name                = "ExplicitAllow"
+    metric_name                = "ExplicitAllowOpenID"
     sampled_requests_enabled   = true
   }
 }
@@ -66,7 +66,7 @@ resource "aws_wafv2_web_acl_rule" "aws_baseline_core" {
   count = var.enable_waf ? 1 : 0
 
   name        = "aws-baseline-core"
-  priority    = 3
+  priority    = 4
   web_acl_arn = aws_wafv2_web_acl.keycloak[0].arn
 
   override_action {
@@ -130,6 +130,7 @@ resource "aws_wafv2_web_acl_rule" "aws_ip_reputation" {
     managed_rule_group_statement {
       name        = "AWSManagedRulesAmazonIpReputationList"
       vendor_name = "AWS"
+
     }
   }
 
